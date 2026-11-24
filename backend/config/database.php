@@ -94,7 +94,9 @@ return [
             'charset' => env('DB_CHARSET', 'utf8'),
             'prefix' => '',
             'prefix_indexes' => true,
-            'search_path' => 'public',
+            'search_path' => env('DB_SCHEMA', 'public'),
+            // La sesión de PostgreSQL usa la misma zona horaria que la aplicación, así los DEFAULT now() de la BD coinciden con now() de PHP.
+            'timezone' => env('APP_TIMEZONE', 'America/La_Paz'),
             'sslmode' => 'prefer',
         ],
 

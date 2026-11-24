@@ -59,12 +59,16 @@ export function Vacio({ children = 'No hay registros para mostrar.' }) {
 export function Modal({ titulo, onCerrar, children, ancho = 'max-w-xl' }) {
   const ref = useRef(null)
   const idT = useId()
+  // onCerrar suele ser una función nueva en cada render; se guarda en una referencia para que el efecto
+  // (foco inicial y atrapado de foco) se ejecute una sola vez y no le quite el foco al campo mientras se escribe.
+  const cerrarRef = useRef(onCerrar)
+  cerrarRef.current = onCerrar
   useEffect(() => {
     const previo = document.activeElement
     const el = ref.current
-    el?.querySelector('input,select,textarea,button')?.focus()
+    ;(el?.querySelector('input:not(:disabled),select:not(:disabled),textarea:not(:disabled)') ?? el?.querySelector('button'))?.focus()
     const tecla = (e) => {
-      if (e.key === 'Escape') onCerrar()
+      if (e.key === 'Escape') cerrarRef.current()
       if (e.key === 'Tab' && el) {
         const f = [...el.querySelectorAll('a[href],button:not(:disabled),input:not(:disabled),select,textarea')]
         if (!f.length) return
@@ -75,7 +79,7 @@ export function Modal({ titulo, onCerrar, children, ancho = 'max-w-xl' }) {
     }
     document.addEventListener('keydown', tecla)
     return () => { document.removeEventListener('keydown', tecla); previo?.focus?.() }
-  }, [onCerrar])
+  }, [])
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center overflow-auto bg-black/50 p-4" onMouseDown={(e) => e.target === e.currentTarget && onCerrar()}>
       <div ref={ref} role="dialog" aria-modal="true" aria-labelledby={idT} className={`card mt-10 w-full ${ancho} shadow-2xl`}>

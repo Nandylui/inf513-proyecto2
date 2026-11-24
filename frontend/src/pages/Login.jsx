@@ -23,7 +23,10 @@ export default function Login() {
     setErrorGlobal('')
     try {
       await login(v.correo.trim(), v.password)
-      nav(state?.desde || '/panel', { replace: true })
+      // Si la sesión venció se vuelve a la pantalla donde se estaba; tras un cierre voluntario se entra al Inicio.
+      let voluntario = false
+      try { voluntario = sessionStorage.getItem('cf_sin_retorno') === '1'; sessionStorage.removeItem('cf_sin_retorno') } catch { /* sin almacenamiento */ }
+      nav((!voluntario && state?.desde) || '/panel', { replace: true })
     } catch (e) {
       setErrorGlobal(mensajeDeError(e))
       throw e

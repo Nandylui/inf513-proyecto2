@@ -48,6 +48,7 @@ export function AuthProvider({ children }) {
   }, [cargarMenu])
 
   const logout = useCallback(async () => {
+    try { sessionStorage.setItem('cf_sin_retorno', '1') } catch { /* almacenamiento no disponible */ }   // cierre voluntario: el próximo ingreso va al Inicio
     try { await api.post('auth/logout', {}, { silencioso: true }) } catch { /* la sesión local se cierra igual */ }
     cerrarLocal()
   }, [cerrarLocal])

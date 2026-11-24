@@ -1,0 +1,18 @@
+digraph A {
+  rankdir=TB; nodesep=0.5; ranksep=0.55; node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=11, margin="0.2,0.12"]; edge [fontname="Helvetica", fontsize=10, color="#475569"];
+  labelloc=t; fontsize=15; label="Arquitectura de tres capas";
+  subgraph cluster_a { label="CAPA 1 · Presentación (navegador)"; style="rounded,filled"; fillcolor="#eff6ff"; color="#93c5fd"; fontname="Helvetica";
+    spa [label="SPA React 18 + Vite\nTailwind v4 · React Router (HashRouter)\nRecharts · lucide-react", fillcolor="#dbeafe"];
+    ctx [label="Contextos: Auth · Tema/Accesibilidad · Avisos\nValidación en cliente (español)\nMenú dinámico · Buscador global · Contador de visitas", fillcolor="#dbeafe"];
+    ax [label="Axios (Bearer token)", fillcolor="#bfdbfe"];
+    spa -> ctx [dir=none]; ctx -> ax [dir=none]; }
+  subgraph cluster_b { label="CAPA 2 · Lógica de negocio (Laravel 12 · API RESTful JSON)"; style="rounded,filled"; fillcolor="#f0fdf4"; color="#86efac"; fontname="Helvetica";
+    mw [label="Middleware: auth:sanctum · permiso:{código} · RegistrarAcceso (bitácora) · throttle", fillcolor="#dcfce7"];
+    ctl [label="Controladores (/api/...)\nvalidación del servidor (mensajes en español)", fillcolor="#dcfce7"];
+    svc [label="Servicios: reglas del Consejo · PagoService · PasarelaSimulada\nBitacoraService · MenuService · DashboardService · Permisos (RBAC)", fillcolor="#dcfce7"];
+    mw -> ctl -> svc; }
+  subgraph cluster_c { label="CAPA 3 · Datos"; style="rounded,filled"; fillcolor="#fffbeb"; color="#fcd34d"; fontname="Helvetica";
+    pg [label="PostgreSQL · db.tecnoweb.org.bo\n(31 tablas: negocio, RBAC, menú, bitácora, visitas, pagos)", shape=cylinder, fillcolor="#fef3c7"]; }
+  ax -> mw [label="HTTPS · JSON\n/inf513/grupo07sa/proyecto2/api", penwidth=1.6];
+  svc -> pg [label="Eloquent / PDO pgsql", penwidth=1.6];
+}

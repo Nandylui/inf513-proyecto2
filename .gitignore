@@ -1,0 +1,12 @@
+# Secretos y dependencias: NUNCA se versionan
+.env
+.env.*
+!.env.example
+vendor/
+node_modules/
+# Archivos generados / locales
+backend/storage/logs/*.log
+backend/storage/framework/cache/data/*
+.phpunit.result.cache
+.DS_Store
+*.tar.gz

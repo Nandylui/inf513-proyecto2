@@ -204,7 +204,7 @@ export default function Pagos() {
             <section key={p.id_plan} className="card" aria-label={`Plan ${p.id_plan}`}>
               <div className="mb-2 flex flex-wrap items-center gap-2"><h2 className="flex-1 font-bold">Plan #{p.id_plan} · {p.concepto?.nombre}</h2><Insignia estado={p.estado} />
                 {p.estado === 'ACTIVO' && <button className="btn btn-sec btn-mini" onClick={() => setCancelar(p)}>Cancelar plan</button>}</div>
-              <p className="suave peq mb-2">Total {bs(p.monto_total)} · pagado {bs(p.pagado)} · {p.num_cuotas} cuotas</p>
+              <p className="suave peq mb-2">Total {bs(p.monto_total)} · pagado {bs(p.pagado)} · <strong>saldo pendiente {bs(Math.max(0, p.monto_total - p.pagado))}</strong> · {p.num_cuotas} cuotas</p>
               <div className="barra mb-2" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round((p.pagado * 100) / (p.monto_total || 1))}><i style={{ width: `${Math.min(100, (p.pagado * 100) / (p.monto_total || 1))}%` }} /></div>
               <Tabla clave="id_cuota" filas={p.cuotas}
                 columnas={[

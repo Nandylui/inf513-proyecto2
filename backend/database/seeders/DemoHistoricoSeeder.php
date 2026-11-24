@@ -139,6 +139,9 @@ class DemoHistoricoSeeder extends Seeder
         for ($d = 13; $d >= 0; $d--) {
             foreach ($consejeros->random(min(4, $consejeros->count())) as $u) {
                 $f = now()->subDays($d)->setTime(mt_rand(7, 20), mt_rand(0, 59));
+                if ($f->gt(now())) {
+                    $f = now()->subMinutes(mt_rand(5, 120));   // el tráfico de ejemplo de hoy nunca queda en el futuro
+                }
                 $ip = $ips[array_rand($ips)];
                 BitacoraAcceso::create(['id_usuario' => $u->id_usuario, 'correo' => $u->correo, 'evento' => 'LOGIN_OK', 'recurso' => 'POST api/auth/login', 'metodo' => 'POST', 'estado_http' => 200, 'ip' => $ip, 'user_agent' => 'Mozilla/5.0 (demo)', 'fecha' => $f]);
                 foreach (array_rand($recursos, 3) as $rec) {

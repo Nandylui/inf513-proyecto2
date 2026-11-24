@@ -45,8 +45,8 @@ export default function Bitacora() {
                 columnas={[
                   { titulo: 'Fecha', celda: (b) => fechaHora(b.fecha) }, { titulo: 'Evento', celda: (b) => <span className={`badge ${CLASE[b.evento]}`}>{ETIQUETA[b.evento] ?? b.evento}</span> },
                   { titulo: 'Usuario', celda: (b) => (b.usuario ? `${b.usuario.nombres} ${b.usuario.apellidos}` : b.correo ?? '-') },
-                  { titulo: 'IP', celda: (b) => <span className="mono">{b.ip ?? '-'}</span> }, { titulo: 'Recurso', celda: (b) => <span className="mono peq">{b.metodo ? `${b.metodo} ` : ''}{b.recurso ?? ''}</span> },
-                  { titulo: 'Estado', celda: (b) => b.codigo_http ?? '-' }, { titulo: 'Detalle', celda: (b) => <span className="peq">{b.detalle ?? ''}</span> },
+                  { titulo: 'IP', celda: (b) => <span className="mono">{b.ip ?? '-'}</span> }, { titulo: 'Recurso', celda: (b) => <span className="mono peq">{b.recurso && b.metodo && !b.recurso.startsWith(`${b.metodo} `) ? `${b.metodo} ` : ''}{b.recurso ?? ''}</span> },
+                  { titulo: 'Estado', celda: (b) => b.estado_http ?? '-' }, { titulo: 'Detalle', celda: (b) => <span className="peq">{b.detalle ?? ''}</span> },
                 ]} />
               <nav className="mt-3 flex items-center justify-between no-imprimir" aria-label="Paginación">
                 <span className="suave peq">{lista.total} eventos · página {lista.pagina} de {lista.ultima_pagina}</span>

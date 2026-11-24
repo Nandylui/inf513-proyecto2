@@ -129,7 +129,7 @@ export default function Pagos() {
 
   const resultado = (p) => {
     if (p.estado === 'APROBADO') toast.ok(`Pago aprobado. Referencia ${p.referencia}.`)
-    else toast.error(`Pago rechazado: ${p.motivo_rechazo ?? 'la pasarela no autorizó la operación'}.`)
+    else toast.error(`Pago rechazado: ${(p.motivo_rechazo ?? 'la pasarela no autorizó la operación').replace(/\.+$/, '')}.`)
     setSolicitud(null); cargar(); setComprobante(p.id_pago)
   }
   const pagarConcepto = (c) => setSolicitud({ titulo: `Pagar: ${c.nombre}`, monto: c.monto, accion: async (d) => resultado(await api.post('pagos', { id_concepto: c.id_concepto, ...d })) })

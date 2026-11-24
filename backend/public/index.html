@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="es" data-tema="adultos" data-modo="dia">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Sistema Web del Consejo Facultativo - FICCT, UAGRM. Gestión de sesiones, documentos, votaciones, resoluciones y pagos." />
+    <meta name="theme-color" content="#1f3a5f" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <title>Consejo Facultativo · FICCT · UAGRM</title>
+    <script>
+      // El sitio se sirve desde un subdirectorio: si falta la barra final, se agrega para que los recursos relativos resuelvan bien.
+      (function () {
+        var p = location.pathname;
+        if (!/\/$/.test(p) && !/\.[a-z0-9]+$/i.test(p)) location.replace(p + '/' + location.search + location.hash);
+      })();
+      // Aplica el tema guardado antes de pintar para evitar parpadeos.
+      (function () {
+        try {
+          var s = JSON.parse(localStorage.getItem('cf_prefs') || 'null');
+          var h = new Date().getHours();
+          var modo = s && s.modo === 'dia' ? 'dia' : s && s.modo === 'noche' ? 'noche' : (h >= 19 || h < 6 ? 'noche' : 'dia');
+          var el = document.documentElement;
+          el.dataset.tema = (s && s.tema) || 'adultos';
+          el.dataset.modo = modo;
+          if (s && s.contraste) el.dataset.contraste = 'alto';
+          if (s && s.fuente) el.style.setProperty('--escala', String(s.fuente / 100));
+        } catch (e) {}
+      })();
+    </script>
+    <script type="module" crossorigin src="./assets/index-DYhXZgZd.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/ui-i-nfLpWc.js">
+    <link rel="stylesheet" crossorigin href="./assets/index-D2i72c_J.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>Esta aplicación necesita JavaScript habilitado.</noscript>
+  </body>
+</html>

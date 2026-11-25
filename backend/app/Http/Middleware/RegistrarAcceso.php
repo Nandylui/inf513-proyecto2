@@ -14,8 +14,14 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class RegistrarAcceso
 {
-    /** Rutas que no se registran porque son ruido de la propia interfaz o se registran por otro medio. */
-    private const OMITIR = ['api/visitas', 'api/visitas/resumen', 'api/buscar', 'api/menu', 'api/auth/me', 'api/auth/login', 'api/auth/logout', 'api/bitacora', 'api/bitacora/resumen'];
+    /** Rutas que nunca se registran aquí: el ingreso y la salida tienen sus propios eventos (LOGIN_*, LOGOUT). */
+    private const OMITIR = ['api/auth/me', 'api/auth/login', 'api/auth/logout'];
+
+    /**
+     * Consultas automáticas de la propia interfaz (contadores, menú, campana, buscador, paneles de la bitácora):
+     * se omiten cuando salen bien para no llenar el registro de ruido, pero un 401/403 sobre ellas SÍ se registra.
+     */
+    private const OMITIR_SI_EXITOSAS = ['POST api/visitas', 'GET api/visitas/resumen', 'GET api/buscar', 'GET api/menu', 'GET api/notificaciones', 'GET api/bitacora', 'GET api/bitacora/resumen'];
 
     public function handle(Request $request, Closure $next): Response
     {
@@ -34,6 +40,9 @@ class RegistrarAcceso
             return;
         }
         $estado = $response->getStatusCode();
+        if (in_array($request->method().' '.$uri, self::OMITIR_SI_EXITOSAS, true) && ! in_array($estado, [401, 403], true)) {
+            return;
+        }
         $evento = in_array($estado, [401, 403], true) ? BitacoraService::DENEGADO : BitacoraService::ACCESO;
 
         BitacoraService::registrar($evento, $request, $request->user(), null, $request->method().' '.$uri, $estado);

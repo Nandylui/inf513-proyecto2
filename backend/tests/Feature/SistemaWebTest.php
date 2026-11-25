@@ -106,6 +106,18 @@ class SistemaWebTest extends TestCase
         $this->assertTrue(BitacoraAcceso::where('evento', 'DENEGADO')->where('recurso', 'GET api/usuarios')->exists());
     }
 
+    public function test_bitacora_registra_denegados_en_rutas_omitidas_pero_no_el_ruido_de_la_interfaz(): void
+    {
+        // El 403 sobre el panel de la bitácora SÍ queda registrado (acceso denegado a un recurso protegido).
+        $this->como('titular.estudiante.inf@consejo.test');
+        $this->getJson('/api/bitacora')->assertStatus(403);
+        $this->assertTrue(BitacoraAcceso::where('evento', 'DENEGADO')->where('recurso', 'GET api/bitacora')->where('estado_http', 403)->exists());
+
+        // La consulta automática de la campana, cuando sale bien, no llena el registro.
+        $this->getJson('/api/notificaciones')->assertOk();
+        $this->assertFalse(BitacoraAcceso::where('recurso', 'GET api/notificaciones')->exists());
+    }
+
     public function test_panel_de_bitacora_solo_para_roles_autorizados(): void
     {
         $this->como('titular.estudiante.inf@consejo.test');

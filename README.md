@@ -60,4 +60,11 @@ El script instala dependencias, crea `backend/.env` la primera vez (complete ah�
 migra la base y publica `backend/public` (la SPA ya compilada) dejando el código de Laravel fuera de la carpeta pública.
 Para recompilar la SPA: `cd frontend && npm run build` (escribe en `backend/public`). Detalles en la sección 10 de la documentación.
 
+## Esquema propio, respaldo y restauración de la base de datos
+
+- **Esquema propio:** en el servidor de la cátedra la base `db_grupo07sa` ya contiene tablas del Vía Email. Para no mezclarlas, cree un esquema (`CREATE SCHEMA consejo_web;`) y defina `DB_SCHEMA=consejo_web` en `backend/.env`; las migraciones crean ahí todas las tablas, funciones y triggers. En local puede dejarse `DB_SCHEMA=public`.
+- **Respaldo:** `php artisan bd:respaldo` genera `storage/app/respaldos/respaldo_AAAAMMDD_HHMMSS.dump` (formato `pg_dump -Fc` del esquema; conserva los 10 más recientes).
+- **Restauración:** `php artisan bd:restaurar` (el respaldo más reciente) o `php artisan bd:restaurar ruta/al/archivo.dump`; reemplaza las tablas del esquema.
+- Requiere `pg_dump`/`pg_restore`. En Windows se buscan en `C:\Program Files\PostgreSQL\<versión>\bin`; si están en otro lugar, defina `PG_BIN` en el `.env`.
+
 > `backend/.env` contiene credenciales y **no se versiona**.

@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\BitacoraAcceso;
 use App\Support\Permisos;
+use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -116,6 +117,18 @@ class SistemaWebTest extends TestCase
         // La consulta automática de la campana, cuando sale bien, no llena el registro.
         $this->getJson('/api/notificaciones')->assertOk();
         $this->assertFalse(BitacoraAcceso::where('recurso', 'GET api/notificaciones')->exists());
+    }
+
+    public function test_triggers_de_postgresql_protegen_la_bitacora_y_completan_el_plan(): void
+    {
+        if (DB::getDriverName() !== 'pgsql') {
+            $this->markTestSkipped('Los triggers solo existen en PostgreSQL (la prueba se ejecuta con DB_CONNECTION=pgsql).');
+        }
+        // 1. La bitácora es de solo escritura.
+        $this->postJson('/api/auth/login', ['correo' => 'nadie@consejo.test', 'password' => 'mala']);
+        $this->expectException(\Illuminate\Database\QueryException::class);
+        $this->expectExceptionMessage('solo escritura');
+        DB::table('bitacora_acceso')->update(['detalle' => 'alterado']);
     }
 
     public function test_panel_de_bitacora_solo_para_roles_autorizados(): void
